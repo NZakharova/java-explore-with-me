@@ -7,6 +7,7 @@ import ru.practicum.explorewithme.statistics.dto.ViewStats;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,7 +26,11 @@ public class StatService {
     }
 
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
-        return Arrays.stream(uris).map(u -> getStatsFor(u, start, end, unique)).collect(Collectors.toList());
+        return Arrays
+                .stream(uris)
+                .map(u -> getStatsFor(u, start, end, unique))
+                .sorted(Comparator.comparingLong(ViewStats::getHits).reversed())
+                .collect(Collectors.toList());
     }
 
     private ViewStats getStatsFor(String uri, LocalDateTime start, LocalDateTime end, boolean unique) {
