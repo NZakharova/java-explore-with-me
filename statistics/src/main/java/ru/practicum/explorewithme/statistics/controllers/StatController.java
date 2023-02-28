@@ -23,7 +23,7 @@ public class StatController {
     public List<ViewStats> getStats(@RequestParam String start,
                                     @RequestParam String end,
                                     @RequestParam String[] uris,
-                                    @RequestParam boolean unique) {
+                                    @RequestParam(defaultValue = "false") boolean unique) {
         return service.getStats(DateUtils.parse(start), DateUtils.parse(end), uris, unique);
     }
 }
