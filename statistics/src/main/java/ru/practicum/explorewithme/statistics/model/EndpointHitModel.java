@@ -27,6 +27,6 @@ public class EndpointHitModel {
     @Column(name = "ip")
     private String ip;
 
-    @Column(name = "timestamp")
-    private LocalDateTime timestamp;
+    @Column(name = "created_on")
+    private LocalDateTime createdOn;
 }
