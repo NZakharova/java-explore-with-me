@@ -4,14 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.explorewithme.model.DateUtils;
+import ru.practicum.explorewithme.utils.DateUtils;
 import ru.practicum.explorewithme.statistics.dto.EndpointHit;
 import ru.practicum.explorewithme.statistics.dto.ViewStats;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Service
 public class StatisticsClient extends BaseClient {
     @Autowired
     public StatisticsClient(@Value("${stat-server.url}") String serverUrl, RestTemplateBuilder builder) {
@@ -21,6 +24,15 @@ public class StatisticsClient extends BaseClient {
                         .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                         .build()
         );
+    }
+
+    public EndpointHit registerHit(HttpServletRequest request) {
+        return registerHit(new EndpointHit(
+                null,
+                "ewm-service",
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                DateUtils.now()));
     }
 
     public EndpointHit registerHit(EndpointHit hit) {

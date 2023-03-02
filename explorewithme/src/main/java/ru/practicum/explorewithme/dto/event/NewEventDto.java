@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.explorewithme.dto.Location;
-import ru.practicum.explorewithme.model.DateUtils;
+import ru.practicum.explorewithme.utils.DateUtils;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;

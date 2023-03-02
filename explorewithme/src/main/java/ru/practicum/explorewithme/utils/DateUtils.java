@@ -1,4 +1,4 @@
-package ru.practicum.explorewithme.model;
+package ru.practicum.explorewithme.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -18,5 +18,9 @@ public class DateUtils {
 
     public static String format(LocalDateTime date) {
         return dateTimeFormatter.format(date);
+    }
+
+    public static LocalDateTime now() {
+        return LocalDateTime.now();
     }
 }

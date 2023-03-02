@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.explorewithme.model.DateUtils;
+import ru.practicum.explorewithme.utils.DateUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
