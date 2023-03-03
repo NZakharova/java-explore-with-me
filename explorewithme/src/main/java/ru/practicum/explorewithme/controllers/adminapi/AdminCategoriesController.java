@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/admin/categories")
 @RequiredArgsConstructor
-public class CategoriesController {
+public class AdminCategoriesController {
     private final StatisticsClient statistics;
     private final CategoryService service;
 

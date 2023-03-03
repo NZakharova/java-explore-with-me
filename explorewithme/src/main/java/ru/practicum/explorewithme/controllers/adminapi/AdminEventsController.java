@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/events")
 @RequiredArgsConstructor
-public class EventsController {
+public class AdminEventsController {
     private final StatisticsClient statistics;
     private final EventService service;
 
