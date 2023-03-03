@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.event.*;
+import ru.practicum.explorewithme.dto.event.requests.EventRequestStatusUpdateRequest;
+import ru.practicum.explorewithme.dto.event.requests.EventRequestStatusUpdateResult;
 import ru.practicum.explorewithme.model.EventState;
 import ru.practicum.explorewithme.service.EventService;
 import ru.practicum.explorewithme.statistics.StatisticsClient;

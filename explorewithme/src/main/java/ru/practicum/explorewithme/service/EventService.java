@@ -2,8 +2,8 @@ package ru.practicum.explorewithme.service;
 
 import org.springframework.data.domain.Pageable;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
-import ru.practicum.explorewithme.dto.event.EventRequestStatusUpdateRequest;
-import ru.practicum.explorewithme.dto.event.EventRequestStatusUpdateResult;
+import ru.practicum.explorewithme.dto.event.requests.EventRequestStatusUpdateRequest;
+import ru.practicum.explorewithme.dto.event.requests.EventRequestStatusUpdateResult;
 import ru.practicum.explorewithme.dto.event.EventShortDto;
 import ru.practicum.explorewithme.model.EventSort;
 import ru.practicum.explorewithme.model.EventState;
