@@ -1,10 +1,7 @@
 package ru.practicum.explorewithme.service;
 
 import org.springframework.data.domain.Pageable;
-import ru.practicum.explorewithme.dto.event.EventFullDto;
-import ru.practicum.explorewithme.dto.event.requests.EventRequestStatusUpdateRequest;
-import ru.practicum.explorewithme.dto.event.requests.EventRequestStatusUpdateResult;
-import ru.practicum.explorewithme.dto.event.EventShortDto;
+import ru.practicum.explorewithme.dto.event.*;
 import ru.practicum.explorewithme.model.EventSort;
 import ru.practicum.explorewithme.model.EventState;
 import ru.practicum.explorewithme.utils.TimePeriod;
@@ -15,14 +12,22 @@ public interface EventService {
     EventFullDto get(long id);
 
     List<EventShortDto> search(String text,
-                               List<Integer> categories,
-                               boolean paid,
+                               List<Long> categories,
+                               Boolean paid,
                                TimePeriod period,
-                               boolean onlyAvailable,
+                               Boolean onlyAvailable,
                                EventSort sort,
                                Pageable pageable);
 
     List<EventShortDto> getAll(List<Long> users, List<EventState> states, List<Long> categories, TimePeriod timePeriod, Pageable pageable);
 
-    EventRequestStatusUpdateResult patch(long id, EventRequestStatusUpdateRequest event);
+    EventFullDto patchEvent(long id, UpdateEventAdminRequest event);
+
+    List<EventShortDto> getEventsBy(long userId, Pageable pageable);
+
+    EventFullDto add(long userId, NewEventDto event);
+
+    EventFullDto getEvent(long userId, long eventId);
+
+    EventFullDto patchEvent(long userId, long eventId, UpdateEventUserRequest event);
 }

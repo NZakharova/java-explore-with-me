@@ -16,7 +16,7 @@ public class ParticipationRequest {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "event_id")
     private long eventId;
@@ -24,9 +24,9 @@ public class ParticipationRequest {
     @Column(name = "requester_id")
     private long requesterId;
 
-    @Column(name = "status")
+    @Column(name = "state")
     @Enumerated(EnumType.ORDINAL)
-    private ParticipationState state;
+    private EventRequestStatus state;
 
     @Column(name = "created_on")
     private LocalDateTime createdOn;

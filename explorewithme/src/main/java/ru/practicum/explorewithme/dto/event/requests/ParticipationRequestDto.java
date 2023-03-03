@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import ru.practicum.explorewithme.model.EventRequestStatus;
 import ru.practicum.explorewithme.utils.DateUtils;
-import ru.practicum.explorewithme.model.ParticipationState;
 
 import java.time.LocalDateTime;
 
@@ -25,5 +25,5 @@ public class ParticipationRequestDto {
 
     private long requester;
 
-    private ParticipationState state;
+    private EventRequestStatus status;
 }

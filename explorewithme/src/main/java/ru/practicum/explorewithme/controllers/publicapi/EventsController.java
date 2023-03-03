@@ -1,6 +1,7 @@
 package ru.practicum.explorewithme.controllers.publicapi;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/events")
 @RequiredArgsConstructor
@@ -24,22 +26,24 @@ public class EventsController {
     private final StatisticsClient statistics;
 
     @GetMapping
-    public List<EventShortDto> getAll(@RequestParam String text,
-                                      @RequestParam List<Integer> categories,
-                                      @RequestParam boolean paid,
+    public List<EventShortDto> getAll(@RequestParam(required = false) String text,
+                                      @RequestParam(required = false) List<Long> categories,
+                                      @RequestParam(required = false) Boolean paid,
                                       @RequestParam(required = false) @DateTimeFormat(pattern = DateUtils.DATE_FORMAT) LocalDateTime rangeStart,
                                       @RequestParam(required = false) @DateTimeFormat(pattern = DateUtils.DATE_FORMAT) LocalDateTime rangeEnd,
-                                      @RequestParam boolean onlyAvailable,
-                                      @RequestParam EventSort sort,
+                                      @RequestParam(required = false) Boolean onlyAvailable,
+                                      @RequestParam(required = false) EventSort sort,
                                       @RequestParam(defaultValue = "0") int from,
                                       @RequestParam(defaultValue = "10") int size,
                                       HttpServletRequest request) {
+        log.info("Public: search event");
         statistics.registerHit(request);
         return service.search(text, categories, paid, new TimePeriod(rangeStart, rangeEnd), onlyAvailable, sort, PaginationUtils.create(from, size));
     }
 
     @GetMapping("/{id}")
     public EventFullDto get(@PathVariable long id, HttpServletRequest request) {
+        log.info("Public: get event {}", id);
         statistics.registerHit(request);
         return service.get(id);
     }

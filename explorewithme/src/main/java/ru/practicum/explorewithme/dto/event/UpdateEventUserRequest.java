@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.explorewithme.dto.Location;
 import ru.practicum.explorewithme.utils.DateUtils;
-import ru.practicum.explorewithme.model.UserStateAction;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -24,6 +24,7 @@ public class UpdateEventUserRequest {
     @Size(min = 20, max = 7000)
     private String description;
 
+    @Future
     @JsonFormat(pattern = DateUtils.DATE_FORMAT)
     @DateTimeFormat(pattern = DateUtils.DATE_FORMAT)
     private LocalDateTime eventDate;

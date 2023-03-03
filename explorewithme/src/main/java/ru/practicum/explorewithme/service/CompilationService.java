@@ -8,7 +8,7 @@ import ru.practicum.explorewithme.dto.compilation.UpdateCompilationRequest;
 import java.util.List;
 
 public interface CompilationService {
-    List<CompilationDto> getAll(boolean pinned, Pageable pageable);
+    List<CompilationDto> getAll(Boolean pinned, Pageable pageable);
     CompilationDto get(long id);
 
     CompilationDto add(NewCompilationDto dto);

@@ -1,4 +1,4 @@
-package ru.practicum.explorewithme.model;
+package ru.practicum.explorewithme.dto.event;
 
 public enum AdminStateAction {
     PUBLISH_EVENT,

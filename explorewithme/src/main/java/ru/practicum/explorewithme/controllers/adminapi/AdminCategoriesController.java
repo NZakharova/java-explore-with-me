@@ -1,6 +1,8 @@
 package ru.practicum.explorewithme.controllers.adminapi;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.category.CategoryDto;
 import ru.practicum.explorewithme.dto.category.NewCategoryDto;
@@ -9,6 +11,7 @@ import ru.practicum.explorewithme.statistics.StatisticsClient;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Slf4j
 @RestController
 @RequestMapping("/admin/categories")
 @RequiredArgsConstructor
@@ -17,19 +20,24 @@ public class AdminCategoriesController {
     private final CategoryService service;
 
     @PostMapping
-    public CategoryDto create(@RequestBody NewCategoryDto category, HttpServletRequest request) {
+    public CategoryDto create(@RequestBody @Validated NewCategoryDto category, HttpServletRequest request) {
+        log.info("Admin: create category: {}", category);
         statistics.registerHit(request);
-        return service.add(category);
+        var dto = service.add(category);
+        log.info("Admin: category created: {}", dto);
+        return dto;
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable long id, HttpServletRequest request) {
+        log.info("Admin: delete category {}", id);
         statistics.registerHit(request);
         service.delete(id);
     }
 
     @PatchMapping("/{id}")
-    public CategoryDto patch(@PathVariable long id, @RequestBody NewCategoryDto category, HttpServletRequest request) {
+    public CategoryDto patch(@PathVariable long id, @RequestBody @Validated NewCategoryDto category, HttpServletRequest request) {
+        log.info("Admin: patch category {}, value: {}", id, category);
         statistics.registerHit(request);
         return service.patch(id, category);
     }
