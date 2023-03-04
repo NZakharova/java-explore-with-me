@@ -27,7 +27,7 @@ public class AdminEventsController {
     private final EventService service;
 
     @GetMapping
-    public List<EventShortDto> getAll(@RequestParam(required = false) List<Long> users,
+    public List<EventFullDto> getAll(@RequestParam(required = false) List<Long> users,
                                       @RequestParam(required = false) List<EventState> states,
                                       @RequestParam(required = false) List<Long> categories,
                                       @RequestParam(required = false) @DateTimeFormat(pattern = DateUtils.DATE_FORMAT) LocalDateTime rangeStart,

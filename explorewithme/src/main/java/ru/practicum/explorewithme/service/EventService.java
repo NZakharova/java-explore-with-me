@@ -19,7 +19,7 @@ public interface EventService {
                                EventSort sort,
                                Pageable pageable);
 
-    List<EventShortDto> getAll(List<Long> users, List<EventState> states, List<Long> categories, TimePeriod timePeriod, Pageable pageable);
+    List<EventFullDto> getAll(List<Long> users, List<EventState> states, List<Long> categories, TimePeriod timePeriod, Pageable pageable);
 
     EventFullDto patchEvent(long id, UpdateEventAdminRequest event);
 

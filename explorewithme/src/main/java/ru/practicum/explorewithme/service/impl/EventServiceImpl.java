@@ -37,8 +37,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventShortDto> getAll(List<Long> users, List<EventState> states, List<Long> categories, TimePeriod timePeriod, Pageable pageable) {
-        return toDto(repository.search(users, states, categories, timePeriod, pageable));
+    public List<EventFullDto> getAll(List<Long> users, List<EventState> states, List<Long> categories, TimePeriod timePeriod, Pageable pageable) {
+        return toFullDto(repository.search(users, states, categories, timePeriod, pageable));
     }
 
     @Override
@@ -215,5 +215,9 @@ public class EventServiceImpl implements EventService {
 
     private List<EventShortDto> toDto(List<Event> events) {
         return events.stream().map(EventMapper::toShortDto).collect(Collectors.toList());
+    }
+
+    private List<EventFullDto> toFullDto(List<Event> events) {
+        return events.stream().map(EventMapper::toFullDto).collect(Collectors.toList());
     }
 }

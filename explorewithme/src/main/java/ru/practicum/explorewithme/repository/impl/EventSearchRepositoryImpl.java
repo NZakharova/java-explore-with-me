@@ -101,7 +101,7 @@ public class EventSearchRepositoryImpl implements EventSearchRepository {
         }
 
         if (states != null && !states.isEmpty()) {
-            predicates.add(root.get("eventStatus").in(states));
+            predicates.add(root.get("state").in(states));
         }
 
         if (categories != null && !categories.isEmpty()) {
