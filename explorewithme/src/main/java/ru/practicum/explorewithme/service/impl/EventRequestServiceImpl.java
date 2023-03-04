@@ -104,11 +104,7 @@ public class EventRequestServiceImpl implements EventRequestService {
         }
 
         if (event.getParticipantLimit() > 0) {
-            // это скорее всего ошибка в тестах postman, потому что логически можно зарегистрироваться,
-            // пока кол-во *подтверждённых* заявок меньше лимита.
-            // Здесь должен быть вызов countByEventIdAndState(eventId, EventRequestStatus.CONFIRMED),
-            // такая же проверка проводится при подтверждении заявок автором события.
-            var participantsCount = repository.countByEventId(eventId);
+            var participantsCount = repository.countByEventIdAndState(eventId, EventRequestStatus.CONFIRMED);
             if (participantsCount + 1 > event.getParticipantLimit()) {
                 throw new ConflictException("Cannot register any more participants");
             }
