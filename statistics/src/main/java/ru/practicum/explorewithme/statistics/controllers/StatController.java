@@ -1,6 +1,7 @@
 package ru.practicum.explorewithme.statistics.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.statistics.dto.EndpointHit;
 import ru.practicum.explorewithme.statistics.dto.ViewStats;
@@ -15,6 +16,7 @@ public class StatController {
     private final StatService service;
 
     @PostMapping("/hit")
+    @ResponseStatus(HttpStatus.CREATED)
     public EndpointHit registerHit(@RequestBody EndpointHit hit) {
         return service.registerHit(hit);
     }
