@@ -103,8 +103,8 @@ public class EventRequestServiceImpl implements EventRequestService {
             throw new ConflictException("Cannot register user to unpublished event");
         }
 
-        if (event.getParticipantLimit() > 0) {
-            var participantsCount = repository.countByEventIdAndState(eventId, EventRequestStatus.CONFIRMED);
+        if (!event.isRequestModeration() && event.getParticipantLimit() > 0) {
+            var participantsCount = repository.countByEventId(eventId);
             if (participantsCount + 1 > event.getParticipantLimit()) {
                 throw new ConflictException("Cannot register any more participants");
             }
