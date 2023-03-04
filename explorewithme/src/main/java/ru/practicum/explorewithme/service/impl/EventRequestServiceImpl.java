@@ -10,6 +10,7 @@ import ru.practicum.explorewithme.dto.event.requests.ParticipationRequestDto;
 import ru.practicum.explorewithme.exceptions.ConflictException;
 import ru.practicum.explorewithme.exceptions.ObjectNotFoundException;
 import ru.practicum.explorewithme.model.EventRequestStatus;
+import ru.practicum.explorewithme.model.EventState;
 import ru.practicum.explorewithme.model.ParticipationRequest;
 import ru.practicum.explorewithme.repository.ParticipationRequestRepository;
 import ru.practicum.explorewithme.service.EventRequestService;
@@ -29,6 +30,7 @@ public class EventRequestServiceImpl implements EventRequestService {
     private final UserService userService;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getEventRequests(long userId, long eventId) {
         eventService.getEvent(userId, eventId);
 
@@ -44,6 +46,14 @@ public class EventRequestServiceImpl implements EventRequestService {
 
         if (event.getInitiator().getId() != userId) {
             throw new ObjectNotFoundException("Event", eventId);
+        }
+
+        if (updateRequest.getStatus() == EventRequestStatus.CONFIRMED && event.getParticipantLimit() > 0) {
+            var participantsCount = repository.countByEventIdAndState(eventId, EventRequestStatus.CONFIRMED);
+            var participantLimit = event.getParticipantLimit() - participantsCount;
+            if (updateRequest.getRequestIds().size() > participantLimit) {
+                throw new ConflictException("Cannot accept more requests than allowed by event");
+            }
         }
 
         for (var reqId : updateRequest.getRequestIds()) {
@@ -63,6 +73,10 @@ public class EventRequestServiceImpl implements EventRequestService {
 
         var request = getRequest(reqId);
 
+        if (request.getState() != EventRequestStatus.PENDING && status != request.getState()) {
+            throw new ConflictException("Invalid state transition");
+        }
+
         request.setState(status);
 
         repository.save(request);
@@ -76,6 +90,30 @@ public class EventRequestServiceImpl implements EventRequestService {
 
     @Override
     public ParticipationRequestDto register(long userId, long eventId) {
+        if (repository.findByEventIdAndRequesterId(eventId, userId).isPresent()) {
+            throw new ConflictException("User " + userId + " is already registered for event " + eventId);
+        }
+
+        var event = eventService.get(eventId);
+        if (event.getInitiator().getId() == userId) {
+            throw new ConflictException("Cannot register user to it's own event");
+        }
+
+        if (event.getState() != EventState.PUBLISHED) {
+            throw new ConflictException("Cannot register user to unpublished event");
+        }
+
+        if (event.getParticipantLimit() > 0) {
+            // это скорее всего ошибка в тестах postman, потому что логически можно зарегистрироваться,
+            // пока кол-во *подтверждённых* заявок меньше лимита.
+            // Здесь должен быть вызов countByEventIdAndState(eventId, EventRequestStatus.CONFIRMED),
+            // такая же проверка проводится при подтверждении заявок автором события.
+            var participantsCount = repository.countByEventId(eventId);
+            if (participantsCount + 1 > event.getParticipantLimit()) {
+                throw new ConflictException("Cannot register any more participants");
+            }
+        }
+
         var model = new ParticipationRequest(null, eventId, userId, EventRequestStatus.PENDING, DateUtils.now());
         return ParticipationRequestMapper.toDto(repository.save(model));
     }

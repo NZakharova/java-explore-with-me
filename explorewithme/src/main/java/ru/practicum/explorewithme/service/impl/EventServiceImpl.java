@@ -45,6 +45,9 @@ public class EventServiceImpl implements EventService {
     public EventFullDto patchEvent(long id, UpdateEventAdminRequest event) {
         var model = getEventModel(id);
 
+        updateEvent(event, model);
+        updateEventState(event.getStateAction(), model);
+
         repository.save(model);
 
         return EventMapper.toFullDto(model);
@@ -94,14 +97,19 @@ public class EventServiceImpl implements EventService {
     public EventFullDto patchEvent(long userId, long eventId, UpdateEventUserRequest event) {
         var model = getEventModel(userId, eventId);
 
+        if (model.getState() == EventState.PUBLISHED) {
+            throw new ConflictException("Cannot change published event");
+        }
+
         updateEvent(event, model);
+        updateEventState(event.getStateAction(), model);
 
         repository.save(model);
 
         return EventMapper.toFullDto(model);
     }
 
-    private void updateEvent(UpdateEventUserRequest event, Event model) {
+    private void updateEvent(UpdateEventRequestBase event, Event model) {
         if (event.getAnnotation() != null) {
             model.setAnnotation(event.getAnnotation());
         }
@@ -136,16 +144,14 @@ public class EventServiceImpl implements EventService {
             model.setRequestModeration(event.getRequestModeration());
         }
 
-        updateEventState(event, model);
-
         if (event.getTitle() != null) {
             model.setTitle(event.getTitle());
         }
     }
 
-    private void updateEventState(UpdateEventUserRequest event, Event model) {
-        if (event.getStateAction() != null) {
-            switch (event.getStateAction()) {
+    private void updateEventState(UserStateAction state, Event model) {
+        if (state != null) {
+            switch (state) {
                 case CANCEL_REVIEW:
                     if (model.getState() != EventState.PENDING) {
                         throw new ConflictException("Event review is already done");
@@ -153,14 +159,29 @@ public class EventServiceImpl implements EventService {
                     model.setState(EventState.CANCELED);
                     break;
                 case SEND_TO_REVIEW:
-                    if (model.getState() != EventState.PENDING) {
-                        throw new ConflictException("Event review is already done");
-                    }
-                    // по спецификации событие может находиться в одном из трёх состояний: PENDING, PUBLISHED, CANCELED
-                    // не понятно в какое состояние переводить для ревью
+                    model.setState(EventState.PENDING);
                     break;
                 default:
-                    throw new ConflictException("Invalid value for 'stateAction' field: " + event.getStateAction());
+                    throw new ConflictException("Invalid value for 'stateAction' field: " + state);
+            }
+        }
+    }
+
+    private void updateEventState(AdminStateAction state, Event model) {
+        if (state != null) {
+            if (model.getState() != EventState.PENDING) {
+                throw new ConflictException("Event review is already done");
+            }
+
+            switch (state) {
+                case PUBLISH_EVENT:
+                    model.setState(EventState.PUBLISHED);
+                    break;
+                case REJECT_EVENT:
+                    model.setState(EventState.CANCELED);
+                    break;
+                default:
+                    throw new ConflictException("Invalid value for 'stateAction' field: " + state);
             }
         }
     }

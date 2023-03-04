@@ -1,6 +1,7 @@
 package ru.practicum.explorewithme.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -29,27 +30,32 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        return logWarn(exception);
+        return logWarn(exception, "Bad request", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<ApiError> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
-        return logWarn(exception);
+        return logWarn(exception, "Bad request", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<ApiError> handleMissingServletRequestParameterException(MissingServletRequestParameterException exception) {
-        return logWarn(exception);
+        return logWarn(exception, "Bad request", HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<ApiError> logWarn(Exception exception) {
+    @ExceptionHandler
+    public ResponseEntity<ApiError> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+        return logWarn(exception,"Conflict with existing data", HttpStatus.CONFLICT);
+    }
+
+    private ResponseEntity<ApiError> logWarn(Exception exception, String message, HttpStatus status) {
         log.warn("Warning", exception);
         return new ResponseEntity<>(new ApiError(null,
-                "Bad request",
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                HttpStatus.BAD_REQUEST.toString(),
+                message,
+                status.getReasonPhrase(),
+                status.toString(),
                 DateUtils.now()
-        ), HttpStatus.BAD_REQUEST);
+        ), status);
     }
 
     private ResponseEntity<ApiError> logError(Throwable throwable) {
