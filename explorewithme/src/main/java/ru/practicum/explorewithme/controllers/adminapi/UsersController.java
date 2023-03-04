@@ -2,6 +2,7 @@ package ru.practicum.explorewithme.controllers.adminapi;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.user.NewUserRequest;
@@ -23,7 +24,7 @@ public class UsersController {
     private final UserService service;
 
     @GetMapping
-    public List<UserShortDto> getAll(@RequestParam List<Long> ids,
+    public List<UserDto> getAll(@RequestParam List<Long> ids,
                                      @RequestParam(defaultValue = "0") int from,
                                      @RequestParam(defaultValue = "10") int size,
                                      HttpServletRequest request) {
@@ -33,6 +34,7 @@ public class UsersController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@RequestBody @Validated NewUserRequest user, HttpServletRequest request) {
         log.info("Admin: create user: {}", user);
         statistics.registerHit(request);
@@ -42,6 +44,7 @@ public class UsersController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id, HttpServletRequest request) {
         log.info("Admin: delete user: {}", id);
         statistics.registerHit(request);

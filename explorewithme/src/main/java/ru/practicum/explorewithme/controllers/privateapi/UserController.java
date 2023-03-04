@@ -2,6 +2,7 @@ package ru.practicum.explorewithme.controllers.privateapi;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.event.UpdateEventUserRequest;
@@ -41,6 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/events")
+    @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto createEvent(@PathVariable long id, @RequestBody @Validated NewEventDto event, HttpServletRequest request) {
         log.info("Users {}: create event: {}", id, event);
         statistics.registerHit(request);
@@ -90,6 +92,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/requests")
+    @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto createRequest(@PathVariable long id, @RequestParam long eventId, HttpServletRequest request) {
         log.info("Users {}: create request for event {}", id, eventId);
         statistics.registerHit(request);

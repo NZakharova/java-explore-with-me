@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.dto.user.NewUserRequest;
 import ru.practicum.explorewithme.dto.user.UserDto;
-import ru.practicum.explorewithme.dto.user.UserShortDto;
 import ru.practicum.explorewithme.exceptions.ObjectNotFoundException;
 import ru.practicum.explorewithme.repository.UserRepository;
 import ru.practicum.explorewithme.service.UserService;
@@ -20,12 +19,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<UserShortDto> getAll(List<Long> ids, Pageable pageable) {
+    public List<UserDto> getAll(List<Long> ids, Pageable pageable) {
         if (ids != null) {
-            return userRepository.findAllById(ids).stream().map(UserMapper::toShortDto).collect(Collectors.toList());
+            return userRepository.findAllById(ids).stream().map(UserMapper::toFullDto).collect(Collectors.toList());
         }
 
-        return userRepository.findAll(pageable).stream().map(UserMapper::toShortDto).collect(Collectors.toList());
+        return userRepository.findAll(pageable).stream().map(UserMapper::toFullDto).collect(Collectors.toList());
     }
 
     @Override
