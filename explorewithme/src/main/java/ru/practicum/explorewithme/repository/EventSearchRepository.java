@@ -10,5 +10,6 @@ import java.util.List;
 
 public interface EventSearchRepository {
     List<Event> search(String text, List<Long> categories, Boolean paid, TimePeriod period, Boolean onlyAvailable, EventSort sort, Pageable pageable);
+
     List<Event> search(List<Long> users, List<EventState> states, List<Long> categories, TimePeriod timePeriod, Pageable pageable);
 }

@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.user.NewUserRequest;
 import ru.practicum.explorewithme.dto.user.UserDto;
-import ru.practicum.explorewithme.dto.user.UserShortDto;
 import ru.practicum.explorewithme.service.UserService;
 import ru.practicum.explorewithme.statistics.StatisticsClient;
 import ru.practicum.explorewithme.utils.PaginationUtils;
@@ -25,9 +24,9 @@ public class UsersController {
 
     @GetMapping
     public List<UserDto> getAll(@RequestParam List<Long> ids,
-                                     @RequestParam(defaultValue = "0") int from,
-                                     @RequestParam(defaultValue = "10") int size,
-                                     HttpServletRequest request) {
+                                @RequestParam(defaultValue = "0") int from,
+                                @RequestParam(defaultValue = "10") int size,
+                                HttpServletRequest request) {
         log.info("Admin: user search");
         statistics.registerHit(request);
         return service.getAll(ids, PaginationUtils.create(from, size));

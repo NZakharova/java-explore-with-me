@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface CompilationService {
     List<CompilationDto> getAll(Boolean pinned, Pageable pageable);
+
     CompilationDto get(long id);
 
     CompilationDto add(NewCompilationDto dto);

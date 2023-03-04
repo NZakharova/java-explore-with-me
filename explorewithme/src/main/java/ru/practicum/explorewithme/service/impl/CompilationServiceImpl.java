@@ -26,8 +26,7 @@ public class CompilationServiceImpl implements CompilationService {
     public List<CompilationDto> getAll(Boolean pinned, Pageable pageable) {
         if (pinned != null) {
             return repository.findAllByPinned(pinned, pageable).stream().map(CompilationMapper::toDto).collect(Collectors.toList());
-        }
-        else {
+        } else {
             return repository.findAll(pageable).stream().map(CompilationMapper::toDto).collect(Collectors.toList());
         }
     }

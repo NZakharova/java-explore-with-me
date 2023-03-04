@@ -6,7 +6,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.event.*;
-import ru.practicum.explorewithme.dto.event.requests.EventRequestStatusUpdateResult;
 import ru.practicum.explorewithme.model.EventState;
 import ru.practicum.explorewithme.service.EventService;
 import ru.practicum.explorewithme.statistics.StatisticsClient;
@@ -28,13 +27,13 @@ public class AdminEventsController {
 
     @GetMapping
     public List<EventFullDto> getAll(@RequestParam(required = false) List<Long> users,
-                                      @RequestParam(required = false) List<EventState> states,
-                                      @RequestParam(required = false) List<Long> categories,
-                                      @RequestParam(required = false) @DateTimeFormat(pattern = DateUtils.DATE_FORMAT) LocalDateTime rangeStart,
-                                      @RequestParam(required = false) @DateTimeFormat(pattern = DateUtils.DATE_FORMAT) LocalDateTime rangeEnd,
-                                      @RequestParam(defaultValue = "0") int from,
-                                      @RequestParam(defaultValue = "10") int size,
-                                      HttpServletRequest request) {
+                                     @RequestParam(required = false) List<EventState> states,
+                                     @RequestParam(required = false) List<Long> categories,
+                                     @RequestParam(required = false) @DateTimeFormat(pattern = DateUtils.DATE_FORMAT) LocalDateTime rangeStart,
+                                     @RequestParam(required = false) @DateTimeFormat(pattern = DateUtils.DATE_FORMAT) LocalDateTime rangeEnd,
+                                     @RequestParam(defaultValue = "0") int from,
+                                     @RequestParam(defaultValue = "10") int size,
+                                     HttpServletRequest request) {
         log.info("Admin: event search");
         statistics.registerHit(request);
         return service.getAll(users, states, categories, new TimePeriod(rangeStart, rangeEnd), PaginationUtils.create(from, size));
