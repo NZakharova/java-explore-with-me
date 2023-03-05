@@ -25,7 +25,7 @@ public interface EventService {
 
     List<EventShortDto> getEventsBy(long userId, Pageable pageable);
 
-    EventFullDto add(long userId, NewEventDto event);
+    EventFullDto add(long userId, NewEventDto event, boolean allowOccurred);
 
     EventFullDto getEvent(long userId, long eventId);
 

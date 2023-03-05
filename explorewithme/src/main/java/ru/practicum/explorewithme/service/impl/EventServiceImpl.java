@@ -59,8 +59,10 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto add(long userId, NewEventDto event) {
-        validateEventDate(event.getEventDate());
+    public EventFullDto add(long userId, NewEventDto event, boolean allowOccurred) {
+        if (!allowOccurred) {
+            validateEventDate(event.getEventDate());
+        }
 
         // требуется обращение к репозиториям, поэтому не использую EventMapper
 

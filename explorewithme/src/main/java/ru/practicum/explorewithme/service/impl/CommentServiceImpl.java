@@ -70,6 +70,10 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto cancelComment(long userId, long commentId) {
         var comment = getCommentModel(userId, commentId);
 
+        if (comment.getState() != ReviewStatus.PENDING) {
+            throw new ConflictException("Can only cancel comments in 'PENDING' state");
+        }
+
         comment.setState(ReviewStatus.CANCELED);
 
         commentRepository.save(comment);
@@ -133,9 +137,6 @@ public class CommentServiceImpl implements CommentService {
             throw new ObjectNotFoundException("Comment", commentId);
         }
 
-        if (comment.getState() != ReviewStatus.PENDING) {
-            throw new ConflictException("Can only cancel comments in 'PENDING' state");
-        }
         return comment;
     }
 

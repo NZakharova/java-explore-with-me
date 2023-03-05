@@ -46,10 +46,13 @@ public class UserController {
 
     @PostMapping("/{id}/events")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventFullDto createEvent(@PathVariable long id, @RequestBody @Validated NewEventDto event, HttpServletRequest request) {
+    public EventFullDto createEvent(@PathVariable long id,
+                                    @RequestParam(defaultValue = "false") boolean allowOccurred,
+                                    @RequestBody @Validated NewEventDto event,
+                                    HttpServletRequest request) {
         log.info("Users {}: create event: {}", id, event);
         statistics.registerHit(request);
-        var result = eventService.add(id, event);
+        var result = eventService.add(id, event, allowOccurred);
         log.info("Users {}: created event: {}", id, result);
         return result;
     }
