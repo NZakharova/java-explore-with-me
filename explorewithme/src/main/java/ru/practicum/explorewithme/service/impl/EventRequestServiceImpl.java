@@ -9,7 +9,7 @@ import ru.practicum.explorewithme.dto.event.requests.EventRequestStatusUpdateRes
 import ru.practicum.explorewithme.dto.event.requests.ParticipationRequestDto;
 import ru.practicum.explorewithme.exceptions.ConflictException;
 import ru.practicum.explorewithme.exceptions.ObjectNotFoundException;
-import ru.practicum.explorewithme.model.EventRequestStatus;
+import ru.practicum.explorewithme.model.ReviewStatus;
 import ru.practicum.explorewithme.model.EventState;
 import ru.practicum.explorewithme.model.ParticipationRequest;
 import ru.practicum.explorewithme.repository.ParticipationRequestRepository;
@@ -48,8 +48,8 @@ public class EventRequestServiceImpl implements EventRequestService {
             throw new ObjectNotFoundException("Event", eventId);
         }
 
-        if (updateRequest.getStatus() == EventRequestStatus.CONFIRMED && event.getParticipantLimit() > 0) {
-            var participantsCount = repository.countByEventIdAndState(eventId, EventRequestStatus.CONFIRMED);
+        if (updateRequest.getStatus() == ReviewStatus.CONFIRMED && event.getParticipantLimit() > 0) {
+            var participantsCount = repository.countByEventIdAndState(eventId, ReviewStatus.CONFIRMED);
             var participantLimit = event.getParticipantLimit() - participantsCount;
             if (updateRequest.getRequestIds().size() > participantLimit) {
                 throw new ConflictException("Cannot accept more requests than allowed by event");
@@ -60,20 +60,20 @@ public class EventRequestServiceImpl implements EventRequestService {
             processRequestUpdate(reqId, event, updateRequest.getStatus());
         }
 
-        var confirmed = repository.findByEventIdAndState(eventId, EventRequestStatus.CONFIRMED);
-        var rejected = repository.findByEventIdAndState(eventId, EventRequestStatus.REJECTED);
+        var confirmed = repository.findByEventIdAndState(eventId, ReviewStatus.CONFIRMED);
+        var rejected = repository.findByEventIdAndState(eventId, ReviewStatus.REJECTED);
 
         return new EventRequestStatusUpdateResult(toDto(confirmed), toDto(rejected));
     }
 
-    private void processRequestUpdate(long reqId, EventFullDto event, EventRequestStatus status) {
+    private void processRequestUpdate(long reqId, EventFullDto event, ReviewStatus status) {
         if (!event.isRequestModeration() || event.getParticipantLimit() == 0) {
             throw new ConflictException("Request does not require approval");
         }
 
         var request = getRequest(reqId);
 
-        if (request.getState() != EventRequestStatus.PENDING && status != request.getState()) {
+        if (request.getState() != ReviewStatus.PENDING && status != request.getState()) {
             throw new ConflictException("Invalid state transition");
         }
 
@@ -110,14 +110,14 @@ public class EventRequestServiceImpl implements EventRequestService {
             }
         }
 
-        var model = new ParticipationRequest(null, eventId, userId, EventRequestStatus.PENDING, DateUtils.now());
+        var model = new ParticipationRequest(null, eventId, userId, ReviewStatus.PENDING, DateUtils.now());
         return ParticipationRequestMapper.toDto(repository.save(model));
     }
 
     @Override
     public ParticipationRequestDto cancel(long userId, long requestId) {
         var request = getRequest(userId, requestId);
-        request.setState(EventRequestStatus.CANCELED);
+        request.setState(ReviewStatus.CANCELED);
 
         repository.save(request);
         return ParticipationRequestMapper.toDto(request);

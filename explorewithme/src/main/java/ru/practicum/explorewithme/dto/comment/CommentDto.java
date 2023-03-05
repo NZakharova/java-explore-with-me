@@ -1,4 +1,4 @@
-package ru.practicum.explorewithme.dto.event.requests;
+package ru.practicum.explorewithme.dto.comment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -13,17 +13,22 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ParticipationRequestDto {
+public class CommentDto {
+    private long id;
+
+    private long authorId;
+
+    private long eventId;
 
     @JsonFormat(pattern = DateUtils.DATE_FORMAT)
     @DateTimeFormat(pattern = DateUtils.DATE_FORMAT)
-    private LocalDateTime created;
+    private LocalDateTime createdOn;
 
-    private long event;
+    @JsonFormat(pattern = DateUtils.DATE_FORMAT)
+    @DateTimeFormat(pattern = DateUtils.DATE_FORMAT)
+    private LocalDateTime updatedOn;
 
-    private long id;
+    private String text;
 
-    private long requester;
-
-    private ReviewStatus status;
+    private ReviewStatus state;
 }

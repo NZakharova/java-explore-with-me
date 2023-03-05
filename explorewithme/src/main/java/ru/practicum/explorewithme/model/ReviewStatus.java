@@ -1,6 +1,6 @@
 package ru.practicum.explorewithme.model;
 
-public enum EventRequestStatus {
+public enum ReviewStatus {
     PENDING,
     CONFIRMED,
     REJECTED,

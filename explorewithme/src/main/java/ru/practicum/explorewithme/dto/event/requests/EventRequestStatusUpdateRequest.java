@@ -3,7 +3,7 @@ package ru.practicum.explorewithme.dto.event.requests;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.explorewithme.model.EventRequestStatus;
+import ru.practicum.explorewithme.model.ReviewStatus;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -16,5 +16,5 @@ public class EventRequestStatusUpdateRequest {
     private List<Long> requestIds;
 
     @NotNull
-    private EventRequestStatus status;
+    private ReviewStatus status;
 }

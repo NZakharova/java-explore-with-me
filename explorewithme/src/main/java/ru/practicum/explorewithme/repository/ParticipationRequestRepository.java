@@ -1,7 +1,7 @@
 package ru.practicum.explorewithme.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.practicum.explorewithme.model.EventRequestStatus;
+import ru.practicum.explorewithme.model.ReviewStatus;
 import ru.practicum.explorewithme.model.ParticipationRequest;
 
 import java.util.List;
@@ -12,11 +12,11 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
 
     List<ParticipationRequest> findByRequesterId(long requesterId);
 
-    List<ParticipationRequest> findByEventIdAndState(long eventId, EventRequestStatus state);
+    List<ParticipationRequest> findByEventIdAndState(long eventId, ReviewStatus state);
 
     Optional<ParticipationRequest> findByEventIdAndRequesterId(long eventId, long requesterId);
 
-    Integer countByEventIdAndState(long eventId, EventRequestStatus state);
+    Integer countByEventIdAndState(long eventId, ReviewStatus state);
 
     Integer countByEventId(long eventId);
 }

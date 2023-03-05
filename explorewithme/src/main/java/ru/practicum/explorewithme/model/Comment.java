@@ -9,25 +9,31 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "participation_requests")
+@Table(name = "comments")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ParticipationRequest {
+public class Comment {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "event_id")
-    private long eventId;
+    @Column(name = "text")
+    private String text;
 
-    @Column(name = "requester_id")
-    private long requesterId;
+    @Column(name = "author_id")
+    private Long authorId;
+
+    @Column(name = "event_id")
+    private Long eventId;
+
+    @Column(name = "created_on")
+    private LocalDateTime createdOn;
+
+    @Column(name = "updated_on")
+    private LocalDateTime updatedOn;
 
     @Column(name = "state")
     @Enumerated(EnumType.ORDINAL)
     private ReviewStatus state;
-
-    @Column(name = "created_on")
-    private LocalDateTime createdOn;
 }
