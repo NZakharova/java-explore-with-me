@@ -59,8 +59,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto add(long userId, NewEventDto event) {
-        validateEventDate(event.getEventDate());
+    public EventFullDto add(long userId, NewEventDto event, boolean allowPast) {
+        // allowPast указывает нужно ли проверсять время создания события.
+        // Если значение true, то позволяет создавать события, которые уже прошли
+        if (!allowPast) {
+            // создавать прошедшее события нельзя, проверяем время
+            validateEventDate(event.getEventDate());
+        }
 
         // требуется обращение к репозиториям, поэтому не использую EventMapper
 

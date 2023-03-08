@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.explorewithme.dto.comment.CommentDto;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
 import ru.practicum.explorewithme.dto.event.EventShortDto;
 import ru.practicum.explorewithme.model.EventSort;
+import ru.practicum.explorewithme.service.CommentService;
 import ru.practicum.explorewithme.service.EventService;
 import ru.practicum.explorewithme.statistics.StatisticsClient;
 import ru.practicum.explorewithme.utils.DateUtils;
@@ -24,6 +26,7 @@ import java.util.List;
 public class EventsController {
     private final EventService service;
     private final StatisticsClient statistics;
+    private final CommentService commentService;
 
     @GetMapping
     public List<EventShortDto> getAll(@RequestParam(required = false) String text,
@@ -46,5 +49,18 @@ public class EventsController {
         log.info("Public: get event {}", id);
         statistics.registerHit(request);
         return service.get(id);
+    }
+
+    // комментарии доступны публично. Они не приложены к событию, чтобы снизить нагрузку на сеть,
+    // потому что не обязательно будет необходимо сразу получать комменатрии при загрузке события.
+    // Например, комментарии на youtube загружаются только если пролистать вниз
+    @GetMapping("/{id}/comments")
+    public List<CommentDto> getComments(@PathVariable long id,
+                                        @RequestParam(defaultValue = "0") int from,
+                                        @RequestParam(defaultValue = "10") int size,
+                                        HttpServletRequest request) {
+        log.info("Public: get comments for event {}", id);
+        statistics.registerHit(request);
+        return commentService.getEventComments(id, PaginationUtils.create(from, size));
     }
 }

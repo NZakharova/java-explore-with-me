@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.explorewithme.dto.comment.CommentDto;
+import ru.practicum.explorewithme.dto.comment.NewCommentDto;
+import ru.practicum.explorewithme.dto.comment.UpdateCommentRequest;
 import ru.practicum.explorewithme.dto.event.UpdateEventUserRequest;
 import ru.practicum.explorewithme.dto.event.requests.EventRequestStatusUpdateRequest;
 import ru.practicum.explorewithme.dto.event.requests.EventRequestStatusUpdateResult;
@@ -12,9 +15,9 @@ import ru.practicum.explorewithme.dto.event.requests.ParticipationRequestDto;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
 import ru.practicum.explorewithme.dto.event.EventShortDto;
 import ru.practicum.explorewithme.dto.event.NewEventDto;
+import ru.practicum.explorewithme.service.CommentService;
 import ru.practicum.explorewithme.service.EventRequestService;
 import ru.practicum.explorewithme.service.EventService;
-import ru.practicum.explorewithme.service.UserService;
 import ru.practicum.explorewithme.statistics.StatisticsClient;
 import ru.practicum.explorewithme.utils.PaginationUtils;
 
@@ -27,9 +30,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final StatisticsClient statistics;
-    private final UserService userService;
     private final EventService eventService;
     private final EventRequestService eventRequestService;
+    private final CommentService commentService;
 
     @GetMapping("/{id}/events")
     public List<EventShortDto> getEvents(@PathVariable long id,
@@ -43,10 +46,13 @@ public class UserController {
 
     @PostMapping("/{id}/events")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventFullDto createEvent(@PathVariable long id, @RequestBody @Validated NewEventDto event, HttpServletRequest request) {
+    public EventFullDto createEvent(@PathVariable long id,
+                                    @RequestParam(defaultValue = "false") boolean allowPast,
+                                    @RequestBody @Validated NewEventDto event,
+                                    HttpServletRequest request) {
         log.info("Users {}: create event: {}", id, event);
         statistics.registerHit(request);
-        var result = eventService.add(id, event);
+        var result = eventService.add(id, event, allowPast);
         log.info("Users {}: created event: {}", id, result);
         return result;
     }
@@ -106,5 +112,50 @@ public class UserController {
         log.info("Users {}: cancel request {}", id, requestId);
         statistics.registerHit(request);
         return eventRequestService.cancel(id, requestId);
+    }
+
+    // пользователь может получать все свои комментарии
+    @GetMapping("/{id}/comments")
+    public List<CommentDto> getComments(@PathVariable long id,
+                                        @RequestParam(defaultValue = "0") int from,
+                                        @RequestParam(defaultValue = "10") int size,
+                                        HttpServletRequest request) {
+        log.info("Users {}: get comments", id);
+        statistics.registerHit(request);
+        return commentService.getUserComments(id, PaginationUtils.create(from, size));
+    }
+
+    // пользователь может оставлять комментарии
+    @PostMapping("/{id}/comments")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentDto postComment(@PathVariable long id, @RequestBody NewCommentDto newComment, HttpServletRequest request) {
+        log.info("Users {}: post comment: {}", id, newComment);
+        statistics.registerHit(request);
+        return commentService.createComment(id, newComment);
+    }
+
+    // пользователь может обновлять комментарий, пока он не прошёл проверку
+    @PatchMapping("/{id}/comments/{commentId}")
+    public CommentDto updateComment(@PathVariable long id, @PathVariable long commentId, @RequestBody UpdateCommentRequest updateComment, HttpServletRequest request) {
+        log.info("Users {}: update comment {} with {}", id, commentId, request);
+        statistics.registerHit(request);
+        return commentService.updateComment(id, commentId, updateComment);
+    }
+
+    // пользователь может отменять публикацию своего комменатрия, пока он не прошёл проверку
+    @PatchMapping("/{id}/comments/{commentId}/cancel")
+    public CommentDto cancelComment(@PathVariable long id, @PathVariable long commentId, HttpServletRequest request) {
+        log.info("Users {}: cancel comment {}", id, commentId);
+        statistics.registerHit(request);
+        return commentService.cancelComment(id, commentId);
+    }
+
+    // пользователь может удалять свои комменатрии
+    @DeleteMapping("/{id}/comments/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteComment(@PathVariable long id, @PathVariable long commentId, HttpServletRequest request) {
+        log.info("Users {}: delete comment {}", id, commentId);
+        statistics.registerHit(request);
+        commentService.deleteComment(id, commentId);
     }
 }
