@@ -3,6 +3,7 @@ package ru.practicum.explorewithme.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explorewithme.dto.comment.CommentDto;
 import ru.practicum.explorewithme.dto.comment.NewCommentDto;
 import ru.practicum.explorewithme.dto.comment.UpdateCommentRequest;
@@ -28,16 +29,19 @@ public class CommentServiceImpl implements CommentService {
     private final ParticipationRequestRepository participationRequestRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentDto> getUserComments(long userId, Pageable pageable) {
         return toDto(commentRepository.findAllByAuthorId(userId, pageable));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentDto> getEventComments(long eventId, Pageable pageable) {
         return toDto(commentRepository.findAllByEventIdAndState(eventId, ReviewStatus.CONFIRMED, pageable));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentDto> getComments(ReviewStatus status, Pageable pageable) {
         if (status != null) {
             return toDto(commentRepository.findAllByState(status, pageable));
@@ -47,6 +51,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentDto createComment(long userId, NewCommentDto newComment) {
         var event = eventRepository.findById(newComment.getEventId()).orElseThrow(() -> new ObjectNotFoundException("Event", newComment.getEventId()));
         var now = DateUtils.now();
@@ -67,6 +72,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentDto cancelComment(long userId, long commentId) {
         var comment = getCommentModel(userId, commentId);
 
@@ -82,12 +88,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(long userId, long commentId) {
         var comment = getCommentModel(userId, commentId);
         commentRepository.delete(comment);
     }
 
     @Override
+    @Transactional
     public CommentDto reviewComment(long id, ReviewStatus status) {
         var comment = getCommentModel(id);
         if (comment.getState() != ReviewStatus.PENDING) {
@@ -109,11 +117,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(long id) {
         commentRepository.deleteById(id);
     }
 
     @Override
+    @Transactional
     public CommentDto updateComment(long userId, long commentId, UpdateCommentRequest updateComment) {
         var comment = getCommentModel(userId, commentId);
         if (comment.getState() != ReviewStatus.PENDING) {
