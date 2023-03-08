@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "65573f43-3898-4619-8717-9062f3784fcd",
-		"name": "Test Explore With me - comments",
+		"_postman_id": "1fa5c6d2-0217-4be1-a9ce-aba18eb6c2d9",
+		"name": "Test Explore With me - comments Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -1335,7 +1335,7 @@
 					"    }",
 					"",
 					"    async addEvent(userId, event, verbose=null) {",
-					"        return this.post(\"/users/\" + userId + \"/events?allowOccurred=true\", event, \"Ошибка при добавлении нового события: \", verbose);",
+					"        return this.post(\"/users/\" + userId + \"/events?allowPast=true\", event, \"Ошибка при добавлении нового события: \", verbose);",
 					"    }",
 					"",
 					"    async addCompilation(compilation, verbose=null) {",
