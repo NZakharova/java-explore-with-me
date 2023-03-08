@@ -8,27 +8,37 @@ import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.explorewithme.model.ReviewStatus;
 import ru.practicum.explorewithme.utils.DateUtils;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentDto {
-    private long id;
+    @NotNull
+    private Long id;
 
-    private long authorId;
+    @NotNull
+    private Long authorId;
 
-    private long eventId;
+    @NotNull
+    private Long eventId;
 
+    @NotNull
     @JsonFormat(pattern = DateUtils.DATE_FORMAT)
     @DateTimeFormat(pattern = DateUtils.DATE_FORMAT)
     private LocalDateTime createdOn;
 
+    @NotNull
     @JsonFormat(pattern = DateUtils.DATE_FORMAT)
     @DateTimeFormat(pattern = DateUtils.DATE_FORMAT)
     private LocalDateTime updatedOn;
 
+    @NotNull
+    @NotBlank
     private String text;
 
+    @NotNull
     private ReviewStatus state;
 }
