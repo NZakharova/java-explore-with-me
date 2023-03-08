@@ -1,5 +1,4 @@
-# java-explore-with-me
-Template repository for ExploreWithMe project.
+# Explore with me
 
 ## Дополнительная функционалость: комментарии
 
@@ -39,6 +38,8 @@ https://github.com/NZakharova/java-explore-with-me/pull/3
 * `PATCH /users/{userId}/comments/{commentId}/cancel` позволяет отменить публикацию комментария
 
 * `DELETE /users/{userId}/comments/{commentId}` позволяет удалить опубликованный комментарий.
+
+* `POST /users/{userId}/events` появился новый параметр `allowPast`, позволяющий создавать события, которые уже прошли.
 
 ### Новые возможности администратора
 
